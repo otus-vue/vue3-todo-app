@@ -24,25 +24,17 @@ import TodoItem from "@/components/TodoApp/TodoItem.vue";
 import TodoFooter from "@/components/TodoApp/TodoFooter.vue";
 import TodoFilters from "@/components/TodoApp/TodoFilters.vue";
 import TodoInput from "@/components/TodoApp/TodoInput.vue";
-import {computed, reactive, ref} from "vue";
+import {computed, onBeforeMount, reactive, ref} from "vue";
+import {getTodoList} from "@/services/todoList";
 
-let todos = reactive([
-  {
-    id: 1,
-    title: 'Buy laptop',
-    isCompleted: false
-  },
-  {
-    id: 2,
-    title: 'Run laptop',
-    isCompleted: false
-  },
-  {
-    id: 3,
-    title: 'Clean my room',
-    isCompleted: true
-  },
-])
+let todos = reactive([])
+
+onBeforeMount(() => {
+  getTodoList().then((data) => {
+    todos.length = 0
+    todos.push(...data)
+  })
+})
 
 function addTodo(text) {
   todos.push({
@@ -75,8 +67,6 @@ const filteredTodos = computed(() => {
     case 'active': return todos.filter(todo => !todo.isCompleted);
   }
 })
-
-console.log(filteredTodos)
 
 function removeTodo(id) {
   const i = todos.findIndex((todo) => todo.id === id)
