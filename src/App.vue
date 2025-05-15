@@ -1,47 +1,49 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <section class="todoapp">
+    <header class="header"><a aria-current="page" href="#/" class="router-link-active router-link-exact-active">
+        <h1>todos</h1>
+      </a><input type="text" class="new-todo" autofocus="" autocomplete="off" placeholder="What needs to be done?">
+    </header>
+    <main class="main">
+      <div class="toggle-all-container"><input type="checkbox" id="toggle-all-input" class="toggle-all"><label
+          class="toggle-all-label" for="toggle-all-input"> Toggle All Input </label></div>
+      <ul class="todo-list">
+        <li class="">
+          <div class="view"><input type="checkbox" class="toggle"><label>one</label><button class="destroy"></button>
+          </div>
+          <div class="input-container"><input id="edit-todo-input" type="text" class="edit"><label
+              class="visually-hidden" for="edit-todo-input">Edit Todo Input</label></div>
+        </li>
+        <li class="completed">
+          <div class="view"><input type="checkbox" class="toggle" checked><label>two</label><button
+              class="destroy"></button>
+          </div>
+          <div class="input-container"><input id="edit-todo-input" type="text" class="edit"><label
+              class="visually-hidden" for="edit-todo-input">Edit Todo Input</label></div>
+        </li>
+        <li class="">
+          <div class="view"><input type="checkbox" class="toggle"><label>three</label><button class="destroy"></button>
+          </div>
+          <div class="input-container"><input id="edit-todo-input" type="text" class="edit"><label
+              class="visually-hidden" for="edit-todo-input">Edit Todo Input</label></div>
+        </li>
+      </ul>
+    </main>
+    <footer class="footer" style=""><span class="todo-count"><strong>2</strong> items left </span>
+      <ul class="filters">
+        <li><a aria-current="page" href="#/" class="selected">All</a></li>
+        <li><a href="#/active" class="">Active</a></li>
+        <li><a href="#/completed" class="">Completed</a></li>
+      </ul><button class="clear-completed" style="">Clear Completed</button>
+    </footer>
+  </section>
+  <footer class="info">
+    <p>Double-click to edit a todo</p>
+    <p>Created by the TodoMVC Team</p>
+    <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+  </footer>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
