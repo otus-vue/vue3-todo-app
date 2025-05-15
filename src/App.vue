@@ -1,49 +1,105 @@
 <script setup>
+import TodoFooter from "./components/TodoApp/TodoFooter.vue";
+import TodoItem from "./components/TodoApp/TodoItem.vue";
+import TodoFilter from "./components/TodoApp/TodoFilter.vue";
+import TodoInput from "./components/TodoApp/TodoInput.vue";
 
+import { computed, reactive, ref, shallowRef } from "vue";
+
+const todos = reactive([
+  {
+    id: 1,
+    title: "one",
+    isCompleted: false,
+  },
+  {
+    id: 2,
+    title: "two",
+    isCompleted: true,
+  },
+]);
+
+const todosRef = shallowRef([
+  {
+    id: 1,
+    title: "one",
+    isCompleted: false,
+  },
+  {
+    id: 2,
+    title: "two",
+    isCompleted: true,
+  },
+]);
+
+console.log(todosRef.value[0]);
+
+function setCompleted(id, newCompleted) {
+  todos.find((todo) => todo.id === id).isCompleted = newCompleted;
+}
+function setTitle(id, newTitle) {
+  todos.find((todo) => todo.id === id).title = newTitle;
+}
+
+function createTodo(title) {
+  todos.push({
+    id: Math.random(),
+    title,
+    isCompleted: false,
+  });
+}
+
+const left = computed(() => todos.filter((t) => !t.isCompleted).length);
+const filter = ref("all");
+
+const filteredTodos = computed(() => {
+  switch (filter.value) {
+    case "all":
+      return todos;
+    case "active":
+      return todos.filter((t) => !t.isCompleted);
+    case "completed":
+      return todos.filter((t) => t.isCompleted);
+  }
+});
+
+function deleteTodo(todoId) {
+  const index = todos.findIndex((todo) => todo.id == todoId);
+  todos.splice(index, 1);
+}
 </script>
 
 <template>
   <section class="todoapp">
-    <header class="header"><a aria-current="page" href="#/" class="router-link-active router-link-exact-active">
-        <h1>todos</h1>
-      </a><input type="text" class="new-todo" autofocus="" autocomplete="off" placeholder="What needs to be done?">
-    </header>
+    <TodoInput @create-todo="createTodo"></TodoInput>
     <main class="main">
-      <div class="toggle-all-container"><input type="checkbox" id="toggle-all-input" class="toggle-all"><label
-          class="toggle-all-label" for="toggle-all-input"> Toggle All Input </label></div>
+      <div class="toggle-all-container">
+        <input
+          type="checkbox"
+          id="toggle-all-input"
+          class="toggle-all"
+        /><label
+          class="toggle-all-label"
+          for="toggle-all-input"
+        >
+          Toggle All Input
+        </label>
+      </div>
       <ul class="todo-list">
-        <li class="">
-          <div class="view"><input type="checkbox" class="toggle"><label>one</label><button class="destroy"></button>
-          </div>
-          <div class="input-container"><input id="edit-todo-input" type="text" class="edit"><label
-              class="visually-hidden" for="edit-todo-input">Edit Todo Input</label></div>
-        </li>
-        <li class="completed">
-          <div class="view"><input type="checkbox" class="toggle" checked><label>two</label><button
-              class="destroy"></button>
-          </div>
-          <div class="input-container"><input id="edit-todo-input" type="text" class="edit"><label
-              class="visually-hidden" for="edit-todo-input">Edit Todo Input</label></div>
-        </li>
-        <li class="">
-          <div class="view"><input type="checkbox" class="toggle"><label>three</label><button class="destroy"></button>
-          </div>
-          <div class="input-container"><input id="edit-todo-input" type="text" class="edit"><label
-              class="visually-hidden" for="edit-todo-input">Edit Todo Input</label></div>
-        </li>
+        <todo-item
+          v-for="todo in filteredTodos"
+          :key="todo.id"
+          @set-completed="setCompleted(todo.id, $event)"
+          @set-title="setTitle(todo.id, $event)"
+          @delete-todo="deleteTodo(todo.id)"
+          :todo="todo"
+        ></todo-item>
       </ul>
     </main>
-    <footer class="footer" style=""><span class="todo-count"><strong>2</strong> items left </span>
-      <ul class="filters">
-        <li><a aria-current="page" href="#/" class="selected">All</a></li>
-        <li><a href="#/active" class="">Active</a></li>
-        <li><a href="#/completed" class="">Completed</a></li>
-      </ul><button class="clear-completed" style="">Clear Completed</button>
-    </footer>
+    <todo-filter
+      @set-filter="filter = $event"
+      :left="left"
+    ></todo-filter>
   </section>
-  <footer class="info">
-    <p>Double-click to edit a todo</p>
-    <p>Created by the TodoMVC Team</p>
-    <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
-  </footer>
+  <todo-footer></todo-footer>
 </template>
